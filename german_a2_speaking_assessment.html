@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutschprüfung A2 – Sprechen</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f0e8;--bg2:#ede7d9;--card:#fff;--ink:#1a1410;--ink2:#5a4e42;--accent:#c84b2f;--accent2:#e8a020;--green:#2d7a4f;--border:#d4cbbe;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+/* NAME GATE */
+.gate{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px}
+.gate.off{display:none}
+.gbox{background:var(--bg);border-radius:20px;padding:48px 40px;max-width:420px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.gbox .flag{font-size:48px;margin-bottom:16px}
+.gbox h2{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:8px}
+.gbox p{font-size:14px;color:var(--ink2);margin-bottom:28px;line-height:1.6}
+.ninput{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--ink);background:#fff;margin-bottom:14px;outline:none;transition:border-color .2s}
+.ninput:focus{border-color:var(--accent)}
+.bstart{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.bstart:hover{background:#a83a1f;transform:translateY(-1px)}
+.bstart:disabled{opacity:.4;cursor:not-allowed;transform:none}
+/* HERO */
+.hero{background:var(--ink);color:#f5f0e8;padding:32px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 24px,rgba(255,255,255,.02) 24px,rgba(255,255,255,.02) 25px)}
+.hi{position:relative;max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hbadge{display:inline-block;background:var(--accent2);color:var(--ink);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(22px,4vw,36px);line-height:1.15}
+.hero p{font-size:13px;color:rgba(245,240,232,.65);font-weight:300;margin-top:4px}
+.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:40px;padding:8px 16px;font-size:13px;color:#f5f0e8;display:flex;align-items:center;gap:8px}
+/* TABS */
+.tw{background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.tabs{display:flex;max-width:820px;margin:0 auto;padding:0 20px;gap:4px}
+.tbtn{flex:1;padding:14px 8px;background:none;border:none;border-bottom:3px solid transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;transition:all .2s;text-align:center}
+.tbtn:hover{color:var(--ink)}
+.tbtn.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tbtn .hn{display:block;font-size:17px;font-family:'DM Serif Display',serif;margin-bottom:2px}
+.tbtn .hp{display:block;font-size:11px;opacity:.7}
+.tbtn.done .hn{color:var(--green)}
+/* CONTENT */
+.main{max-width:820px;margin:0 auto;padding:28px 20px 60px}
+.panel{display:none}.panel.on{display:block}
+.phdr{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.ptitle{font-family:'DM Serif Display',serif;font-size:26px}
+.psub{font-size:13px;color:var(--ink2);font-weight:300}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:18px;box-shadow:0 2px 12px rgba(26,20,16,.08);overflow:hidden;transition:all .2s}
+.qcard.done{border-color:#a8d5b8}
+.qhd{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg)}
+.qn{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#f5f0e8;font-family:'DM Serif Display',serif;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s}
+.qn.done{background:var(--green)}
+.qm{flex:1}
+.qm strong{font-size:14px;font-weight:600;display:block}
+.qm span{font-size:12px;color:var(--ink2)}
+.bp{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.bR{background:#e8f4fd;color:#1a6fa8}.bU{background:#eef8ee;color:#2d7a4f}.bA{background:#fff8e6;color:#a06800}
+.bAn{background:#f8eeff;color:#7a3da0}.bE{background:#fff0ee;color:#c84b2f}.bC{background:#ffeef6;color:#a0286e}
+.qbody{padding:18px}
+.qtxt{font-size:15px;line-height:1.7;color:var(--ink);margin-bottom:18px;font-style:italic;border-left:3px solid var(--accent2);background:var(--bg);border-radius:0 6px 6px 0;padding:12px 14px}
+.rec{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rbtn{display:flex;align-items:center;gap:7px;padding:10px 16px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;user-select:none}
+.rbtn svg{width:14px;height:14px;flex-shrink:0}
+.bgo{background:var(--accent);color:#fff}
+.bgo:hover{background:#a83a1f;transform:translateY(-1px)}
+.bgo.on{background:#8b0000;animation:pr 1.2s ease-in-out infinite}
+@keyframes pr{0%,100%{box-shadow:0 0 0 0 rgba(200,75,47,.5)}50%{box-shadow:0 0 0 8px rgba(200,75,47,0)}}
+.bstop{background:var(--ink2);color:#fff;display:none}
+.bstop:hover{background:var(--ink)}
+.bstop.v{display:flex}
+.tim{font-size:13px;font-weight:700;color:var(--accent);min-width:44px;display:none;font-variant-numeric:tabular-nums}
+.tim.v{display:block}
+.rst{font-size:12px;color:var(--ink2);font-style:italic;flex-basis:100%;margin-top:2px;display:none}
+.rst.v{display:block}
+.apl{margin-top:12px;display:none;width:100%}
+.apl.v{display:block}
+.apl audio{width:100%;height:36px;border-radius:6px}
+.albl{font-size:11px;color:var(--green);font-weight:700;margin-bottom:5px}
+.brer{background:none;border:1px solid var(--border);color:var(--ink2);padding:6px 12px;font-size:12px;margin-top:8px;border-radius:6px;cursor:pointer}
+.brer:hover{border-color:var(--ink2);color:var(--ink)}
+.ust{font-size:12px;margin-top:6px;padding:6px 10px;border-radius:6px;display:none}
+.ust.v{display:block}
+.ust.upl{background:#fff8e6;color:#a06800}
+.ust.ok{background:#eef8ee;color:var(--green);font-weight:600}
+.ust.er{background:#fff0ee;color:var(--accent)}
+.pgw{background:var(--border);border-radius:4px;height:5px;margin-bottom:20px;overflow:hidden}
+.pgf{height:100%;background:var(--accent);border-radius:4px;transition:width .4s}
+.ssec{margin-top:32px;padding:24px;background:var(--ink);border-radius:var(--radius);color:#f5f0e8;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ssec strong{font-family:'DM Serif Display',serif;font-size:18px;display:block;margin-bottom:4px}
+.ssec span{font-size:13px;opacity:.7}
+.bsub{background:var(--accent2);color:var(--ink);border:none;padding:12px 28px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.bsub:hover{background:#d49010;transform:translateY(-1px)}
+.bsub:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.mov{position:fixed;inset:0;background:rgba(26,20,16,.75);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.mov.open{display:flex}
+.mbox{background:var(--card);border-radius:16px;padding:40px 36px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(26,20,16,.3)}
+.mico{width:64px;height:64px;background:#eef8ee;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+.mbox h2{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:10px}
+.mbox p{font-size:14px;color:var(--ink2);line-height:1.6;margin-bottom:8px}
+.msub{font-size:13px;color:var(--accent);font-style:italic;margin-bottom:16px;min-height:20px}
+.mpg{background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin-bottom:20px}
+.mpgf{height:100%;background:var(--green);border-radius:4px;transition:width .3s}
+.bmc{background:var(--ink);color:#f5f0e8;border:none;padding:12px 28px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+@media(max-width:520px){.hero{padding:24px 16px}.tabs{padding:0 6px;gap:0}.tbtn{font-size:11px;padding:10px 4px}.ssec{flex-direction:column;text-align:center}.gbox{padding:32px 24px}}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gbox">
+    <div class="flag">&#127465;&#127466;</div>
+    <h2>Willkommen!</h2>
+    <p>Bitte geben Sie Ihren vollständigen Namen ein. Ihre Aufnahmen werden automatisch in Google Drive gespeichert.</p>
+    <input class="ninput" id="ni" type="text" placeholder="Vollständiger Name…" oninput="chk()" onkeydown="if(event.key==='Enter')begin()">
+    <button class="bstart" id="bs" onclick="begin()" disabled>Prüfung starten &#8594;</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hi">
+    <div><span class="hbadge">CEFR A2 · Sprechen</span><h1>Deutsche Sprachprüfung</h1><p>3 Hände · 18 Fragen · Auto-Upload zu Google Drive</p></div>
+    <div class="chip" id="chip" style="display:none">&#128100; Teilnehmer: <strong id="cname"></strong></div>
+  </div>
+</div>
+
+<div class="tw">
+  <div class="tabs">
+    <button class="tbtn on" onclick="sw(0)" id="t0"><span class="hn">Hand 1</span><span class="hp" id="p0">0/6</span></button>
+    <button class="tbtn" onclick="sw(1)" id="t1"><span class="hn">Hand 2</span><span class="hp" id="p1">0/6</span></button>
+    <button class="tbtn" onclick="sw(2)" id="t2"><span class="hn">Hand 3</span><span class="hp" id="p2">0/6</span></button>
+  </div>
+</div>
+
+<div class="main" id="main"></div>
+
+<div class="mov" id="mov">
+  <div class="mbox">
+    <div class="mico" id="mico">&#9203;</div>
+    <h2 id="mt">Wird hochgeladen…</h2>
+    <p id="mb">Aufnahmen werden gespeichert.</p>
+    <div class="msub" id="ms"></div>
+    <div class="mpg" id="mpgw"><div class="mpgf" id="mpgf" style="width:0%"></div></div>
+    <button class="bmc" id="mclose" onclick="closem()" style="display:none">Weiter &#8594;</button>
+  </div>
+</div>
+
+<script>
+const SURL='https://script.google.com/macros/s/AKfycbx_ZAAVipWErZ5ZQN8HeLX_kIppc1bqFiOEph89w1BbiEBqFRBScYr_ZpSW4ClxjOgMeA/exec';
+
+const DATA=[
+  {title:'Hand 1',qs:[
+    {b:'R',l:'Erinnern',t:'30-45 Sek.',tx:'Sie sprechen mit einem neuen Bekannten über Ihre Schulzeit. Er fragt Sie: Welche Schulfächer hatten Sie in der Schule? Nennen Sie fünf Fächer, die Sie hatten. Sprechen Sie 30–45 Sekunden. Register: informell.'},
+    {b:'U',l:'Verstehen',t:'30-45 Sek.',tx:'Eine Freundin fragt Sie: Was ist der Unterschied zwischen einer Ausbildung und einem Studium? Erklären Sie ihr mit eigenen Worten, was beide Wege bedeuten. Sprechen Sie 30–45 Sekunden. Register: informell.'},
+    {b:'A',l:'Anwenden',t:'45-75 Sek.',tx:'Stellen Sie sich vor: Ein jüngerer Schüler fragt Sie um Rat. Er sagt: Ich weiß nicht, ob ich nach der Schule eine Ausbildung machen soll oder studieren soll. Was würden Sie ihm sagen? Geben Sie ihm einen Rat und begründen Sie Ihre Meinung. Sprechen Sie 45–75 Sekunden. Register: informell, beratend.'},
+    {b:'An',l:'Analysieren',t:'45-75 Sek.',tx:'Sie sind Auszubildende/r in einer Firma. Ihr Kollege hatte letzte Woche drei Tage Berufsschule und konnte nicht im Betrieb arbeiten. Jetzt fragt er Sie: Warum muss ich eigentlich zur Berufsschule gehen? Ich lerne doch alles hier im Betrieb. Erklären Sie ihm, warum die Berufsschule ein wichtiger Teil der Ausbildung ist. Sprechen Sie 45–75 Sekunden. Register: kollegial, informell aber respektvoll.'},
+    {b:'E',l:'Beurteilen',t:'75-120 Sek.',tx:'Sie arbeiten in der Personalabteilung. Ihr Chef fragt Sie: Wir haben zwei Bewerber für den Ausbildungsplatz. Bewerber A hat sehr gute Noten im Zeugnis, aber wenig Interesse am Beruf gezeigt. Bewerber B hat mittelmäßige Noten, aber großes Interesse und hat schon ein Praktikum bei uns gemacht. Wen sollten wir nehmen und warum? Bewerten Sie beide Kandidaten und begründen Sie Ihre Empfehlung. Sprechen Sie 75–120 Sekunden. Register: professionell, höflich.'},
+    {b:'C',l:'Erstellen',t:'75-120 Sek.',tx:'Sie sind Auszubildende/r und sollen bei einer Informationsveranstaltung für Schüler über Ihre Ausbildung sprechen. Stellen Sie Ihren Ausbildungsberuf vor. Erklären Sie, was Sie in der Ausbildung lernen, wie ein typischer Arbeitstag aussieht, und warum Sie diesen Beruf gewählt haben. Zielgruppe: Schüler (15–16 Jahre). Sprechen Sie 75–120 Sekunden. Register: freundlich, motivierend.'}
+  ]},
+  {title:'Hand 2',qs:[
+    {b:'R',l:'Erinnern',t:'20-30 Sek.',tx:'Ein Freund fragt Sie: Was war dein Lieblingsfach in der Schule und welche Note hattest du meistens in diesem Fach? Nennen Sie ein Schulfach und eine Note. Sprechen Sie 20–30 Sekunden. Register: informell.'},
+    {b:'U',l:'Verstehen',t:'30-45 Sek.',tx:'Ihre Kollegin sagt: Meine Tochter hat gerade ihr Abitur gemacht. Was bedeutet das für die Tochter? Erklären Sie mit eigenen Worten, was sie jetzt machen kann. Sprechen Sie 30–45 Sekunden. Register: informell.'},
+    {b:'A',l:'Anwenden',t:'45-75 Sek.',tx:'Sie möchten Ihre Meinung zu Hausaufgaben sagen. Verwenden Sie diese Redemittel in vollständigen Sätzen: Meiner Meinung nach..., Ich finde, dass..., Da hast du recht. Sprechen Sie über Hausaufgaben und ob sie wichtig oder zu viel sind. Sprechen Sie 45–75 Sekunden. Register: informell.'},
+    {b:'An',l:'Analysieren',t:'45-75 Sek.',tx:'Sie sind Auszubildende/r in einer Firma. Ihr Kollege sagt: Ich hatte in der Schule nur schlechte Noten in Mathematik, aber jetzt muss ich jeden Tag mit Zahlen arbeiten. Warum könnte die Schule und die Ausbildung so unterschiedlich sein? Was bedeutet das für die Beziehung zwischen Schule und Beruf? Sprechen Sie 45–75 Sekunden. Register: kollegial-informell.'},
+    {b:'E',l:'Beurteilen',t:'75-120 Sek.',tx:'Sie sind in einem Bewerbungsgespräch. Der Arbeitgeber fragt: Viele Bewerber haben das Abitur, aber Sie haben eine Ausbildung gemacht. Welcher Weg ist besser für diesen Beruf? Bewerten Sie beide Wege für den Beruf, den Sie lernen. Begründen Sie Ihre Meinung mit mindestens zwei Argumenten. Sprechen Sie 75–120 Sekunden. Register: höflich-professionell.'},
+    {b:'C',l:'Erstellen',t:'75-120 Sek.',tx:'Sie sind Auszubildende/r und sollen neuen Azubis in Ihrer Firma helfen. Entwickeln Sie eine kurze Willkommensrede für den ersten Tag. Erklären Sie: was die neuen Azubis in den ersten Wochen lernen werden, wen sie fragen können, und geben Sie einen persönlichen Tipp aus Ihrer Erfahrung. Ihre Rede soll freundlich und ermutigend sein. Sprechen Sie 75–120 Sekunden. Register: kollegial-unterstützend.'}
+  ]},
+  {title:'Hand 3',qs:[
+    {b:'R',l:'Erinnern',t:'30-45 Sek.',tx:'Ein Freund fragt Sie: Welche Schultypen gibt es in Deutschland? Nennen Sie vier verschiedene Schultypen. Sprechen Sie 30–45 Sekunden. Register: informell.'},
+    {b:'U',l:'Verstehen',t:'30-45 Sek.',tx:'Ihr jüngerer Bruder sagt: Ich möchte nach der Schule eine Ausbildung machen, aber ich verstehe nicht, was ein Azubi den ganzen Tag macht. Erklären Sie ihm mit eigenen Worten, was ein Auszubildender in einer Ausbildung macht. Sprechen Sie 30–45 Sekunden. Register: informell.'},
+    {b:'A',l:'Anwenden',t:'45-75 Sek.',tx:'Sie treffen einen alten Schulfreund nach vielen Jahren wieder. Erzählen Sie ihm von Ihrer Schulzeit: Welche Schule haben Sie besucht? Was war Ihr Lieblingsfach und warum? Wie waren Ihre Noten? Sprechen Sie 45–75 Sekunden. Register: informell.'},
+    {b:'An',l:'Analysieren',t:'45-75 Sek.',tx:'Sie arbeiten in einem deutschen Unternehmen. Ein neuer Auszubildender sagt zu Ihnen: Ich verstehe nicht, warum ich zur Berufsschule gehen muss. Ich lerne doch alles hier in der Firma. Erklären Sie ihm, warum die Berufsschule ein wichtiger Teil der Ausbildung ist und welche Vorteile sie hat. Sprechen Sie 45–75 Sekunden. Register: kollegial-freundlich.'},
+    {b:'E',l:'Beurteilen',t:'75-120 Sek.',tx:'In einer Teambesprechung diskutieren Sie über einen jungen Kollegen. Ihr Chef sagt: Er hat kein Abitur gemacht, nur eine Ausbildung. Ist er wirklich qualifiziert für diese Aufgabe? Bewerten Sie diese Aussage: Ist das Abitur immer wichtiger als eine Ausbildung für die Arbeit? Begründen Sie Ihre Meinung mit Beispielen aus dem Arbeitsalltag. Sprechen Sie 75–120 Sekunden. Register: höflich-professionell.'},
+    {b:'C',l:'Erstellen',t:'75-120 Sek.',tx:'Ihre Firma möchte mehr junge Menschen für eine Ausbildung gewinnen. Ihr Chef bittet Sie: Bereiten Sie eine kurze Präsentation vor. Erklären Sie jungen Schulabgängern, warum eine Ausbildung in unserem Unternehmen eine gute Wahl ist. Sprechen Sie über: die Vorteile einer Ausbildung, was man in Ihrer Firma lernt, und wie die Zukunftschancen sind. Sprechen Sie 75–120 Sekunden. Register: freundlich-werbend.'}
+  ]}
+];
+
+const QLABELS=['Q1_Erinnern','Q2_Verstehen','Q3_Anwenden','Q4_Analysieren','Q5_Beurteilen','Q6_Erstellen'];
+
+let sname='';
+const MR={},CH={},BL={},TI={},EL={},REC={};
+const DONE=[false,false,false];
+
+function chk(){document.getElementById('bs').disabled=document.getElementById('ni').value.trim().length<2;}
+function begin(){
+  sname=document.getElementById('ni').value.trim();
+  if(sname.length<2)return;
+  document.getElementById('gate').classList.add('off');
+  document.getElementById('chip').style.display='flex';
+  document.getElementById('cname').textContent=sname;
+  buildUI();
+}
+
+function buildUI(){
+  const main=document.getElementById('main');
+  main.innerHTML='';
+  DATA.forEach((hand,hi)=>{
+    const div=document.createElement('div');
+    div.className='panel'+(hi===0?' on':'');
+    div.id='panel'+hi;
+    let html=`<div class="phdr"><span class="ptitle">${hand.title}</span><span class="psub">6 Fragen · CEFR A2</span></div>
+      <div class="pgw"><div class="pgf" id="pgf${hi}" style="width:0%"></div></div>`;
+    hand.qs.forEach((q,qi)=>{
+      const k=`${hi}-${qi}`;
+      html+=`<div class="qcard" id="card${k}">
+        <div class="qhd">
+          <div class="qn" id="qn${k}">${qi+1}</div>
+          <div class="qm"><strong>Frage ${qi+1}</strong><span>${q.l} · ${q.t}</span></div>
+          <span class="bp b${q.b}">${q.l}</span>
+        </div>
+        <div class="qbody">
+          <div class="qtxt">${q.tx}</div>
+          <div class="rec" id="rec${k}">
+            <button class="rbtn bgo" onclick="startR('${k}')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Aufnehmen</button>
+            <button class="rbtn bstop" id="stp${k}" onclick="stopR('${k}')"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>Stopp</button>
+            <span class="tim" id="tim${k}">0:00</span>
+            <span class="rst" id="rst${k}"></span>
+            <div class="apl" id="apl${k}">
+              <div class="albl">&#10003; Aufnahme bereit</div>
+              <audio controls id="aud${k}"></audio><br>
+              <button class="brer" onclick="reR('${k}')">&#8635; Neu aufnehmen</button>
+            </div>
+            <div class="ust" id="ust${k}"></div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`<div class="ssec">
+      <div><strong>${hand.title} abgeben</strong><span id="sn${hi}">Bitte alle 6 Fragen aufnehmen.</span></div>
+      <button class="bsub" id="sub${hi}" onclick="submitH(${hi})" disabled>Hochladen &amp; Abgeben &#8594;</button>
+    </div>`;
+    div.innerHTML=html;
+    main.appendChild(div);
+  });
+}
+
+function sw(i){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on',j===i));
+  document.querySelectorAll('.tbtn').forEach((b,j)=>b.classList.toggle('on',j===i));
+}
+
+async function startR(k){
+  if(MR[k])return;
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mr=new MediaRecorder(stream);
+    MR[k]=mr; CH[k]=[];
+    mr.ondataavailable=e=>{if(e.data.size>0)CH[k].push(e.data)};
+    mr.onstop=()=>{
+      const blob=new Blob(CH[k],{type:'audio/webm'});
+      BL[k]=blob;
+      document.getElementById('aud'+k).src=URL.createObjectURL(blob);
+      document.getElementById('apl'+k).classList.add('v');
+      stream.getTracks().forEach(t=>t.stop());
+      delete MR[k];
+      markR(k);
+    };
+    mr.start();
+    const b=document.querySelector('#rec'+k+' .bgo');
+    b.classList.add('on');
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Aufnahme läuft…';
+    document.getElementById('stp'+k).classList.add('v');
+    document.getElementById('tim'+k).classList.add('v');
+    document.getElementById('rst'+k).textContent='🎙 Mikrofon aktiv';
+    document.getElementById('rst'+k).classList.add('v');
+    EL[k]=0;
+    TI[k]=setInterval(()=>{EL[k]++;const m=Math.floor(EL[k]/60),s=String(EL[k]%60).padStart(2,'0');document.getElementById('tim'+k).textContent=m+':'+s;},1000);
+  }catch(e){alert('Mikrofon konnte nicht gestartet werden. Bitte erlauben Sie den Mikrofonzugriff.');}
+}
+
+function stopR(k){
+  if(MR[k]&&MR[k].state!=='inactive')MR[k].stop();
+  clearInterval(TI[k]);
+  const b=document.querySelector('#rec'+k+' .bgo');
+  b.classList.remove('on');
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Aufnehmen';
+  document.getElementById('stp'+k).classList.remove('v');
+  document.getElementById('rst'+k).textContent='✓ Aufnahme beendet';
+}
+
+function reR(k){
+  document.getElementById('apl'+k).classList.remove('v');
+  document.getElementById('tim'+k).classList.remove('v');
+  document.getElementById('tim'+k).textContent='0:00';
+  document.getElementById('rst'+k).classList.remove('v');
+  const u=document.getElementById('ust'+k);
+  u.className='ust'; u.textContent='';
+  document.getElementById('card'+k).classList.remove('done');
+  const qn=document.getElementById('qn'+k);
+  qn.classList.remove('done'); qn.textContent=parseInt(k.split('-')[1])+1;
+  REC[k]=false;
+  updProg(k.split('-')[0]);
+}
+
+function markR(k){
+  REC[k]=true;
+  document.getElementById('card'+k).classList.add('done');
+  const qn=document.getElementById('qn'+k);
+  qn.classList.add('done'); qn.textContent='✓';
+  updProg(k.split('-')[0]);
+}
+
+function updProg(hi){
+  let c=0;
+  for(let q=0;q<6;q++){if(REC[hi+'-'+q])c++;}
+  document.getElementById('pgf'+hi).style.width=(c/6*100)+'%';
+  document.getElementById('p'+hi).textContent=c+'/6';
+  const sb=document.getElementById('sub'+hi);
+  const sn=document.getElementById('sn'+hi);
+  if(c===6){sb.disabled=false;sn.textContent='Alle 6 Aufnahmen bereit. Jetzt hochladen!';}
+  else{sb.disabled=true;sn.textContent='Noch '+(6-c)+' Frage(n) aufzunehmen.';}
+}
+
+function b64(blob){
+  return new Promise((res,rej)=>{const r=new FileReader();r.onloadend=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(blob);});
+}
+
+async function uploadOne(k,hi,qi){
+  const u=document.getElementById('ust'+k);
+  u.className='ust v upl'; u.textContent='⏳ Wird hochgeladen…';
+  try{
+    const b64data=await b64(BL[k]);
+    const safe=sname.replace(/[^a-zA-Z0-9_ -]/g,'_');
+    const fname=safe+'_Hand'+(hi+1)+'_'+QLABELS[qi]+'.webm';
+    const resp=await fetch(SURL,{method:'POST',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:b64data})});
+    const json=await resp.json();
+    if(json.success){u.className='ust v ok';u.textContent='✓ In Google Drive gespeichert';return true;}
+    else throw new Error(json.error||'Fehler');
+  }catch(e){u.className='ust v er';u.textContent='✗ '+e.message;return false;}
+}
+
+async function submitH(hi){
+  document.getElementById('mico').textContent='⏳';
+  document.getElementById('mt').textContent='Wird hochgeladen…';
+  document.getElementById('mb').textContent='Hand '+(hi+1)+' Aufnahmen werden in Google Drive gespeichert.';
+  document.getElementById('ms').textContent='Datei 1 von 6…';
+  document.getElementById('mpgf').style.width='0%';
+  document.getElementById('mpgw').style.display='block';
+  document.getElementById('mclose').style.display='none';
+  document.getElementById('mov').classList.add('open');
+
+  let allOk=true;
+  for(let q=0;q<6;q++){
+    document.getElementById('ms').textContent='Datei '+(q+1)+' von 6… ('+QLABELS[q]+')';
+    document.getElementById('mpgf').style.width=((q/6)*100)+'%';
+    const ok=await uploadOne(hi+'-'+q,hi,q);
+    if(!ok)allOk=false;
+  }
+  document.getElementById('mpgf').style.width='100%';
+
+  if(allOk){
+    DONE[hi]=true;
+    document.getElementById('t'+hi).classList.add('done');
+    document.getElementById('mico').textContent='✓';
+    document.getElementById('mt').textContent='Hand '+(hi+1)+' gespeichert!';
+    document.getElementById('mb').textContent='Alle 6 Aufnahmen wurden erfolgreich in Google Drive hochgeladen.'+(hi<2?' Bitte fahren Sie mit Hand '+(hi+2)+' fort.':' Herzlichen Glückwunsch – alle Hände abgeschlossen!');
+    document.getElementById('ms').textContent='';
+  }else{
+    document.getElementById('mico').textContent='⚠️';
+    document.getElementById('mt').textContent='Teilweise fehlgeschlagen';
+    document.getElementById('mb').textContent='Einige Dateien konnten nicht hochgeladen werden. Bitte prüfen Sie die roten Fehlermeldungen.';
+    document.getElementById('ms').textContent='';
+  }
+  document.getElementById('mpgw').style.display='none';
+  document.getElementById('mclose').style.display='inline-block';
+}
+
+function closem(){
+  document.getElementById('mov').classList.remove('open');
+  const next=DONE.indexOf(false);
+  if(next!==-1)sw(next);
+}
+</script>
+</body>
+</html>
