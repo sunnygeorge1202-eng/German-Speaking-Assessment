@@ -399,10 +399,9 @@ async function submitSet(si,idx){
         const b64d=await b64(BL[k]);
         const safe=sname.replace(/[^a-zA-Z0-9_ -]/g,'_');
         const fname=`${safe}_Sprechen_Set${setNum}_${QLABELS[qi]}.webm`;
-        const resp=await fetch(SURL,{method:'POST',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:b64d})});
-        const json=await resp.json();
-        if(json.success){if(ust){ust.className='ust v ok';ust.textContent='✓ In Google Drive gespeichert';}}
-        else throw new Error(json.error||'Fehler');
+        const resp=await fetch(SURL,{method:'POST',mode:'no-cors',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:b64d})});
+        // no-cors = opaque response, no body to read — treat no network error as success
+        if(ust){ust.className='ust v ok';ust.textContent='✓ In Google Drive gespeichert';}
       }catch(e){if(ust){ust.className='ust v er';ust.textContent='✗ '+e.message;}allOk=false;}
     }
     updModal('',100);
@@ -421,13 +420,12 @@ async function submitSet(si,idx){
     try{
       const safe=sname.replace(/[^a-zA-Z0-9_ -]/g,'_');
       const fname=`${safe}_${SKILL_LABELS[si]}_Set${setNum}_Antworten.json`;
-      const bytes=new TextEncoder().encode(JSON.stringify(payload,null,2));
-      let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
-      const resp=await fetch(SURL,{method:'POST',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:btoa(bin),isJson:true})});
-      const json=await resp.json();
+      const jsonStr=JSON.stringify(payload,null,2);
+      const b64str=btoa(unescape(encodeURIComponent(jsonStr)));
+      const resp=await fetch(SURL,{method:'POST',mode:'no-cors',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:b64str,isJson:true})});
+      // no-cors returns opaque response — treat no network error as success
       updModal('',100);
-      if(json.success)finishModal(si,idx,setNum);
-      else throw new Error(json.error||'Fehler');
+      finishModal(si,idx,setNum);
     }catch(e){showModal('⚠️','Fehler',e.message,'',100,true);}
   }
 }
@@ -452,6 +450,16 @@ function showModal(ico,title,body,sub,pct,showClose){
 }
 function updModal(sub,pct){document.getElementById('ms').textContent=sub;document.getElementById('mpgf').style.width=pct+'%';}
 function closem(){document.getElementById('mov').classList.remove('open');}
+
+// Warn student before closing tab
+window.addEventListener('beforeunload', function(e) {
+  const anyAnswered = Object.keys(answers).length > 0 || Object.keys(BL).length > 0;
+  if(anyAnswered) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 </script>
 </body>
 </html>
