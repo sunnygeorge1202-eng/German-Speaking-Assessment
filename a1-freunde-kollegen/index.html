@@ -499,9 +499,9 @@ async function submitSet(si,idx){
     try{
       const safe=sname.replace(/[^a-zA-Z0-9_ -]/g,'_');
       const fname=`${safe}_${SKILL_LABELS[si]}_Set${setNum}_Antworten.json`;
-      const bytes=new TextEncoder().encode(JSON.stringify(payload,null,2));
-      let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
-      const resp=await fetch(SURL,{method:'POST',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:btoa(bin),isJson:true})});
+      const jsonStr=JSON.stringify(payload,null,2);
+      const b64str=btoa(unescape(encodeURIComponent(jsonStr)));
+      const resp=await fetch(SURL,{method:'POST',body:JSON.stringify({studentName:sname,filename:fname,audioBase64:b64str,isJson:true})});
       const json=await resp.json();
       updModal('',100);
       if(json.success)finishModal(si,idx,setNum);
