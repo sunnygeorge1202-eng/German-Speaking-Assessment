@@ -119,6 +119,12 @@ audio{width:100%;margin-top:10px;border-radius:8px;outline:none}
 .cp-progress{background:rgba(255,255,255,.15);border-radius:4px;height:4px;overflow:hidden;margin-bottom:6px}
 .cp-progress-fill{height:100%;border-radius:4px;transition:width .4s,background .4s}
 .cp-count{font-size:12px;opacity:.7}
+.cp-finish-row{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+.btn-finish{background:var(--ink2);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .3s;white-space:nowrap}
+.btn-finish:disabled{opacity:.45;cursor:not-allowed}
+.btn-finish:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,122,79,.4)}
+.cp-finish-note{font-size:12px;opacity:.6;font-style:italic}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(45,122,79,.5)}50%{box-shadow:0 0 0 10px rgba(45,122,79,0)}}
 .mov{position:fixed;inset:0;background:rgba(26,20,16,.75);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
 .mov.open{display:flex}
 .mbox{background:var(--card);border-radius:16px;padding:36px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(26,20,16,.3)}
@@ -172,6 +178,12 @@ audio{width:100%;margin-top:10px;border-radius:8px;outline:none}
     </div>
     <div class="cp-progress"><div class="cp-progress-fill" id="cp-bar-fill" style="width:0%"></div></div>
     <div class="cp-grid" id="cp-rows"></div>
+    <div class="cp-finish-row">
+      <button class="btn-finish" id="btn-finish-assessment" disabled onclick="window.close();showModal('🎉','Assessment Complete!','All sections submitted. You may now close this tab.','',100,true);">
+        Finish Assessment (0/0 submitted)
+      </button>
+      <span class="cp-finish-note">This button enables only when ALL skills and sets are submitted.</span>
+    </div>
   </div>
 </div>
 
@@ -304,6 +316,7 @@ function begin(){
   document.getElementById('chip').style.display='flex';
   document.getElementById('cname').textContent=sname;
   buildAll();
+  document.getElementById('completion-panel').style.display='block';
 }
 
 function buildAll(){
@@ -345,6 +358,7 @@ function buildAll(){
   });
   // inject embedded audio
   updateCompletionPanel();
+  updateFinishButton();
   document.querySelectorAll('.embedded-audio').forEach(el=>{
     const key=el.dataset.audiokey;
     if(AUDIO_B64[key]){el.src=AUDIO_B64[key];el.style.display='block';}
@@ -414,6 +428,26 @@ function buildQCard(q,qi,k,si){
 function showSkill(si){
   document.querySelectorAll('.skill-panel').forEach((p,i)=>p.classList.toggle('on',i===si));
   document.querySelectorAll('.stab').forEach((b,i)=>b.classList.toggle('on',i===si));
+  // Nudge: highlight any pending sets in the skill just switched to
+  highlightPendingSets(si);
+}
+
+function highlightPendingSets(si){
+  const sk=SKILL_KEYS[si];
+  if(!DATA[sk])return;
+  DATA[sk].forEach((s,idx)=>{
+    const btn=document.getElementById(`sub_${si}_${idx}`);
+    const submitted=SUBMITTED[`${si}_${idx}`];
+    if(btn && !submitted){
+      // Flash the submit section to draw attention
+      const ssec=btn.closest('.ssec');
+      if(ssec){
+        ssec.style.transition='background .3s';
+        ssec.style.background='#2d1a10';
+        setTimeout(()=>{ ssec.style.background='var(--ink)'; },600);
+      }
+    }
+  });
 }
 function showSet(si,idx){
   document.querySelectorAll(`#skill${si} .set-panel`).forEach((p,i)=>p.classList.toggle('on',i===idx));
@@ -551,18 +585,33 @@ async function submitSet(si,idx){
 }
 function finishModal(si,idx,setNum){
   SUBMITTED[`${si}_${idx}`]=true;
+
+  // FIX 1: Lock the submit button so it can't be clicked again
+  const btn=document.getElementById(`sub_${si}_${idx}`);
+  if(btn){
+    btn.disabled=true;
+    btn.textContent='✓ Submitted';
+    btn.style.background='var(--green)';
+    btn.style.color='#fff';
+    btn.style.cursor='default';
+  }
+  const note=document.getElementById(`sn_${si}_${idx}`);
+  if(note) note.textContent='This section has been submitted successfully.';
+
   updateCompletionPanel();
+  updateFinishButton();
+
   const otherIdx=idx===0?1:0;
   const otherDone=SUBMITTED[`${si}_${otherIdx}`];
   if(allSubmitted()){
     showModal('🎉','Assessment Complete!',
-      'All sections have been submitted successfully. Your responses are saved in Google Drive.',
+      'All sections have been submitted. Your responses are saved in Google Drive.',
       'You may now close this tab.',100,true);
-    document.getElementById('completion-panel').style.display='block';
   } else {
+    const remaining=getTotalSets()-getSubmittedCount();
     showModal('✓',`${SKILL_LABELS[si]} Set ${setNum} saved!`,
       'Your answers have been saved to Google Drive.',
-      otherDone?'Both sets done! Please move to the next skill.':'Please complete Set '+(otherIdx+1)+' for this skill.',
+      `${remaining} section${remaining>1?'s':''} still to complete. Please continue.`,
       100,true);
   }
 }
@@ -588,6 +637,24 @@ function updateCompletionPanel(){
   document.getElementById('cp-bar-fill').style.width=`${(done/total)*100}%`;
   document.getElementById('cp-bar-fill').style.background=done===total?'var(--green)':'var(--accent)';
 }
+function updateFinishButton(){
+  const btn=document.getElementById('btn-finish-assessment');
+  if(!btn)return;
+  const done=getSubmittedCount();
+  const total=getTotalSets();
+  if(done>=total){
+    btn.disabled=false;
+    btn.textContent='✓ All Done — Close Tab';
+    btn.style.background='var(--green)';
+    btn.style.animation='pulse-green 1.5s ease-in-out infinite';
+  } else {
+    btn.disabled=true;
+    btn.textContent=`Finish Assessment (${done}/${total} submitted)`;
+    btn.style.background='';
+    btn.style.animation='';
+  }
+}
+
 function showModal(ico,title,body,sub,pct,showClose){
   document.getElementById('mico').textContent=ico;
   document.getElementById('mt').textContent=title;
